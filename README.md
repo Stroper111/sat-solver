@@ -1,1 +1,39 @@
-# sat-solver
+# Sat-solver
+
+With the increase in [SAT][sat-wiki] solvers speed I tried my hand at experimenting with them.
+
+The experiments have been run with Microsoft Z3 solver, for docmentation and tutorials check out [Z3Py][z3py-docs]
+
+
+[sat-wiki]: https://en.wikipedia.org/wiki/Boolean_satisfiability_problem
+[z3py-docs]: https://ericpony.github.io/z3py-tutorial/guide-examples.htm
+
+
+## Sudoku
+
+For the Sudoku solver I used the basic Sudoku rules but expanded them with some common rules used on the [Cracking The Cryptic][ctc] channel.
+These extra constraints are the Kings move, Knight move and non-consecutive constraints. This make it possible to solve the following Sudoku (in real life and using the SAT solver):
+
+
+[ctc]: https://www.youtube.com/channel/UCC-UOdK8-mIjxBQm_ot1T-Q
+
+```
+Begin state and solved state of the Sudoku (valid=True)
+
+ .  .  .  |  .  .  .  |  .  .  . 		 4  8  3  |  7  2  6  |  1  5  9 
+ .  .  .  |  .  .  .  |  .  .  . 		 7  2  6  |  1  5  9  |  4  8  3 
+ .  .  .  |  .  .  .  |  .  .  . 		 1  5  9  |  4  8  3  |  7  2  6 
+ -  -  -  +  -  -  -  +  -  -  - 		 -  -  -  +  -  -  -  +  -  -  - 
+ .  .  .  |  .  .  .  |  .  .  . 		 8  3  7  |  2  6  1  |  5  9  4 
+ .  .  1  |  .  .  .  |  .  .  . 		 2  6  1  |  5  9  4  |  8  3  7 
+ .  .  .  |  .  .  .  |  2  .  . 		 5  9  4  |  8  3  7  |  2  6  1 
+ -  -  -  +  -  -  -  +  -  -  - 		 -  -  -  +  -  -  -  +  -  -  - 
+ .  .  .  |  .  .  .  |  .  .  . 		 3  7  2  |  6  1  5  |  9  4  8 
+ .  .  .  |  .  .  .  |  .  .  . 		 6  1  5  |  9  4  8  |  3  7  2 
+ .  .  .  |  .  .  .  |  .  .  . 		 9  4  8  |  3  7  2  |  6  1  5
+```
+
+For more Sudoku examples see the [examples](/sudoku/examples.py)
+
+## Use cases
+- [Efficient SAT Approach to Multi-Agent Path Findingunder the Sum of Costs Objective](https://www.andrew.cmu.edu/user/gswagner/workshop/IJCAI_2016_WOMPF_paper_5.pdf)
