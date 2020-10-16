@@ -12,10 +12,11 @@ The experiments have been run with Microsoft Z3 solver, for docmentation and tut
 ## Sudoku
 
 For the Sudoku solver I used the basic Sudoku rules but expanded them with some common rules used on the [Cracking The Cryptic][ctc] channel.
-These extra constraints are the Kings move, Knight move and non-consecutive constraints. This make it possible to solve the following Sudoku (in real life and using the SAT solver):
+These extra constraints are the Kings move, Knight move and non-consecutive constraints. This make it possible to solve the following Sudoku (in real life and using the SAT solver <sup>1</sup>):
 
 
 [ctc]: https://www.youtube.com/channel/UCC-UOdK8-mIjxBQm_ot1T-Q
+[1]: [youtube solve](https://www.youtube.com/watch?v=yKf9aUIxdb4)
 
 ```
 Begin state and solved state of the Sudoku (valid=True)
