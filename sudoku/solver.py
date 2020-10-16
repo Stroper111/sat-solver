@@ -93,8 +93,7 @@ class SudokuSolverZ3:
     def show(self, n=3):
         """
             Display the begin state and solved state of the Sudoku, side by side.
-
-            :param flatline: The sudoku problem in a line
+            
             :param n: The size of the sub square size.
         """
 
