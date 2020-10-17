@@ -39,7 +39,10 @@ NON_CONSECUTIVE_CONSTRAINT = [
 ]
 
 MIRACLE = [
-    # Cracking the cryptic: https://www.youtube.com/watch?v=yKf9aUIxdb4&t=271s
     # Knight move, Kings move and non consecutive constraint
-    ' ' * 4 * 9 + '  1' + ' ' * 4 * 3 + '2  ' + ' ' * 3 * 9
+    # Cracking the cryptic: https://www.youtube.com/watch?v=yKf9aUIxdb4&t=271s
+    ' ' * 4 * 9 + '  1' + ' ' * 4 * 3 + '2  ' + ' ' * 3 * 9,
+
+    # Cracking the cryptic: https://www.youtube.com/watch?v=Tv-48b-KuxI
+    ' ' * 7 * 3 + ' 4 ' + ' ' * 1 * 3 + '  3' + ' ' * (6 + 5 * 9)
 ]
