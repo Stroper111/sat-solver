@@ -81,7 +81,7 @@ class Sudoku:
         """
 
         flatline = self.flatline if flatline is None else flatline
-        flatline = flatline.translate(str.maketrans({k: '.' for k in ' .xX'}))
+        flatline = flatline.translate(str.maketrans({k: '.' for k in self.empty_markers}))
         fmt = ' | '.join([' %s ' * n] * n)
         sep = ' + '.join([' - ' * n] * n)
         for i in range(n):
