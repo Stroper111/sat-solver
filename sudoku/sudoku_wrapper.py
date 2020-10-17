@@ -4,7 +4,7 @@ import random
 from itertools import product
 from string import ascii_uppercase
 
-from sudoku.examples import *
+from sudoku.sudoku_examples import *
 
 
 class Sudoku:
