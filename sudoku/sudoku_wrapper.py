@@ -68,8 +68,7 @@ class Sudoku:
             return False
 
         # assert that each unit is solved:
-        check_unit = lambda unit: set(grid[cell] for cell in unit) == set("123456789")
-        return all(check_unit(unit) for unit in self.distinct)
+        return all(set(grid[cell] for cell in unit) == set("123456789") for unit in self.distinct)
 
     def show(self, flatline=None, n=3):
         """
