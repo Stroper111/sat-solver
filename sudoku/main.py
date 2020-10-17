@@ -1,12 +1,12 @@
-from sudoku import z3py
+from sudoku.z3py import main as z3py
 
 
 def z3_solve_all():
-    z3py.main.solve_normal()
-    z3py.main.solve_knight_move_constraint()
-    z3py.main.solve_kings_move_constraint()
-    z3py.main.solve_non_consecutive_constraint()
-    z3py.main.solve_miracle()
+    z3py.solve_normal()
+    z3py.solve_knight_move_constraint()
+    z3py.solve_kings_move_constraint()
+    z3py.solve_non_consecutive_constraint()
+    z3py.solve_miracle()
 
 
 def pycosat_solve_all():
