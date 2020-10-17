@@ -95,7 +95,7 @@ class SudokuSolverZ3:
             Display the begin state and solved state of the Sudoku, side by side.
             
             :param n: int
-                the grouping size (side of a subsquare)=
+                the grouping size (side of a sub square)
         """
 
         maketrans = str.maketrans({k: '.' for k in ' .xX'})

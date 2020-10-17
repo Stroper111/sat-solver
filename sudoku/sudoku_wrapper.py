@@ -77,7 +77,7 @@ class Sudoku:
         :param flatline: str
             The sudoku problem as a flatline in row major order, if none uses internal flatline.
         :param n: int
-            the grouping size (side of a subsquare)
+            the grouping size (side of a sub square)
         """
 
         flatline = self.flatline if flatline is None else flatline
