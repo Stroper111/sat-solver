@@ -2,11 +2,14 @@
 
 With the increase in [SAT][sat-wiki] solvers speed I tried my hand at experimenting with them.
 
-The experiments have been run with Microsoft Z3 solver, for docmentation and tutorials check out [Z3Py][z3py-docs]
+The experiments have been run with:
+ - Microsoft Z3 solver, for documentation and tutorials, check out [Z3Py][z3py-docs].
+ - Pycosat, for documentation and examples, check out [Pycosat][pycosat-docs].
 
 
 [sat-wiki]: https://en.wikipedia.org/wiki/Boolean_satisfiability_problem
 [z3py-docs]: https://ericpony.github.io/z3py-tutorial/guide-examples.htm
+[pycosat-docs]: https://github.com/ContinuumIO/pycosat
 
 
 ## Sudoku
@@ -34,7 +37,7 @@ Begin state and solved state of the Sudoku (valid=True)
  .  .  .  |  .  .  .  |  .  .  . 		 9  4  8  |  3  7  2  |  6  1  5
 ```
 
-For more Sudoku examples see the [examples](/sudoku/examples.py)
+For more Sudoku examples see the [examples](/sudoku/sudoku_examples.py)
 
 ## Use cases
 - [Efficient SAT Approach to Multi-Agent Path Findingunder the Sum of Costs Objective](https://www.andrew.cmu.edu/user/gswagner/workshop/IJCAI_2016_WOMPF_paper_5.pdf)
