@@ -21,6 +21,13 @@ HARD_SUDOKU = [
     # Cracking the cryptic
     # https: // cracking-the-cryptic.web.app / sudoku / nn468RjnbB
     '2 1 7 8   4     3 8  2    547  65 936 5                  34 6    47   1 79  5   8',
+
+    # https://www.youtube.com/watch?v=8C-A7xmBLRU
+    '1  4  7   2  5  8   3  6  9 1  4  7   2  5  89  3  6  7    8  28  2  9   9  7  1 ',
+
+    # https://cracking-the-cryptic.web.app/sudoku/jHQR32FrfP
+    ' ' * 3 * 3 + '  98    7 8  6  5  5  4  3   79    2' + ' ' * 3 * 3 + '  27    9 4  5  6 3    62  ',
+
 ]
 
 KNIGHT_CONSTRAINT = [
