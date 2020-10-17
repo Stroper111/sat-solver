@@ -77,8 +77,8 @@ class SudokuSolverZ3:
 
     def constraint_non_consecutive(self, pos1, pos2):
         """ The two elements can't be 1 step away.  """
-        self.solver.add(pos1 != pos2 - 1)
-        self.solver.add(pos1 != pos2 + 1)
+        self.constraint_not_equal(pos1, pos2 - 1)
+        self.constraint_not_equal(pos1, pos2 + 1)
 
     def run(self):
         """ Run the actual solver, if successful it will return a new solved Sudoku instance.  """
@@ -94,7 +94,8 @@ class SudokuSolverZ3:
         """
             Display the begin state and solved state of the Sudoku, side by side.
             
-            :param n: The size of the sub square size.
+            :param n: int
+                the grouping size (side of a subsquare)=
         """
 
         maketrans = str.maketrans({k: '.' for k in ' .xX'})

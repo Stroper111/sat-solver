@@ -46,18 +46,18 @@ class Sudoku:
             logging.info(f"[!] No grid value was given, replaced by random sudoku example.")
             flatline = random.choice(SIMPLE_SUDOKU + HARD_SUDOKU)
 
-        if self.validate_grid(flatline):
-            positions = list(map(''.join, product("ABCDEFGHI", "123456789")))
-            grid = dict(zip(positions, flatline))
+        self.validate_flatline(flatline)
+        positions = list(map(''.join, product("ABCDEFGHI", "123456789")))
+        grid = dict(zip(positions, flatline))
         return grid
 
     @staticmethod
-    def validate_grid(grid):
+    def validate_flatline(flatline):
         """  Validate that the input grid is the right size, and contains only valid inputs. """
-        if len(grid) != 81:
-            raise ValueError(f"Not a valid 9x9 sudoku {len(grid)}/81")
-        if any(char not in "123456789" + Sudoku.empty_markers for char in grid):
-            raise ValueError(f"Invalid grid value detected: {set(grid) - set('123456789' + Sudoku.empty_markers)}")
+        if len(flatline) != 81:
+            raise ValueError(f"Not a valid 9x9 sudoku {len(flatline)}/81")
+        if any(char not in "123456789" + Sudoku.empty_markers for char in flatline):
+            raise ValueError(f"Invalid grid value detected: {set(flatline) - set('123456789' + Sudoku.empty_markers)}")
         return True
 
     def validate_solution(self, grid=None):
@@ -75,8 +75,10 @@ class Sudoku:
         """
             Display grid from a string (values in row major order with blanks for unknowns)
 
-        :param flatline: The sudoku problem in a line
-        :param n: the grouping size (side of a subsquare)
+        :param flatline: str
+            The sudoku problem as a flatline in row major order, if none uses internal flatline.
+        :param n: int
+            the grouping size (side of a subsquare)
         """
 
         flatline = self.flatline if flatline is None else flatline
