@@ -56,8 +56,13 @@ class SudokuSolverPycosat:
 
     def add_kings_move_constraint(self):
         """ All the adjacent cells (including diagonal) have to be different.  """
+        # TODO verify and correct
         for pos, neighbours in self.sudoku.constraint_cells_all(name='kings_move').items():
-            pass
+            for neighbour in neighbours:
+                constraints = []
+                for value in range(1, 10):
+                    constraints.extend((self.create_fact(pos, value), self.create_fact('~' + neighbour, value)))
+                self.cnf += self.constraint_none_of(constraints)
 
     def add_non_consecutive_constraint(self):
         """ Two orthogonal adjacent cells, have to differ by at least 2.  (6, 7 can't be neighbours)"""
@@ -146,9 +151,10 @@ class SudokuSolverPycosat:
         return self.solved
 
     def run_all(self):
-        for solution in self.itersolve(self.cnf):
+        for idx, solution in enumerate(self.itersolve(self.cnf), start=1):
             solved = self.facts_to_str(self.sudoku.positions, solution)
             self.solved = Sudoku(solved)
+            print(f"\nSolution: {idx}")
             self.show()
 
     def show(self, n=3):
@@ -163,7 +169,7 @@ class SudokuSolverPycosat:
         flatline_init = self.sudoku.flatline.translate(maketrans)
         flatline_solved = self.solved.flatline.translate(maketrans) if self.solved is not None else flatline_init
         valid_solution = self.solved.validate_solution() if self.solved is not None else 'FAILED'
-        print(f"\n\nBegin state and solved state of the Sudoku (valid={valid_solution})\n")
+        print(f"Begin state and solved state of the Sudoku (valid={valid_solution})\n")
 
         fmt = ' | '.join([' %s ' * n] * n)
         sep = ' + '.join([' - ' * n] * n)
@@ -175,3 +181,4 @@ class SudokuSolverPycosat:
 
             if i != n - 1:
                 print(f"{sep}\t\t{sep}")
+        print(" ")
