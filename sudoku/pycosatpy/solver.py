@@ -28,7 +28,7 @@ class SudokuSolverPycosat:
 
         # Convert pos to SAT solver  value.
         self.symbols = list(map(''.join, product(self.sudoku.positions, map(str, range(1, 10)))))
-        self.clauses = []
+        self.cnf = []
 
         self.solved = None  # Final solved state of the sudoku if possible.
         self.add_default_constraints()
@@ -38,68 +38,64 @@ class SudokuSolverPycosat:
 
         # Every cell contains values in range 1-9
         for pos in self.sudoku.positions:
-            self.constraint_one_of(list(range(1, 10)), [pos])
+            self.cnf += self.constraint_one_of(self.create_fact(pos, value) for value in range(1, 10))
 
         # These groups all hold distinct values (rows, cols, sub squares)
         for group in self.sudoku.distinct:
             for value in range(1, 10):
-                self.constraint_distinct([self.create_fact(pos, value) for pos in group])
+                self.cnf += self.constraint_one_of(self.create_fact(pos, value) for pos in group)
 
         # Add the already given information
         for pos, value in {pos: value for pos, value in self.sudoku.grid.items() if value in '123456789'}.items():
-            self.constraint_equal(pos, value)
+            self.cnf += self.constraint_basic_fact(self.create_fact(pos, value))
 
-    # def add_knight_move_constraint(self):
-    #     """ Two cells that are a knight move away have to be different.  """
-    #     for pos, neighbours in self.sudoku.constraint_cells_all(name='knight_move').items():
-    #         for neighbour in neighbours:
-    #             self.constraint_not_equal(self.symbols[pos], self.symbols[neighbour])
-    #
-    # def add_kings_move_constraint(self):
-    #     """ All the adjacent cells (including diagonal) have to differ by at least 2.   (6, 7 can't be neighbours) """
-    #     for pos, neighbours in self.sudoku.constraint_cells_all(name='kings_move').items():
-    #         for neighbour in neighbours:
-    #             self.constraint_not_equal(self.symbols[pos], self.symbols[neighbour])
-    #
-    # def add_non_consecutive_constraint(self):
-    #     """ Two orthogonal adjacent cells, have to differ by at least 2.  (6, 7 can't be neighbours)"""
-    #     for pos, neighbours in self.sudoku.constraint_cells_all(name='consecutive').items():
-    #         for neighbour in neighbours:
-    #             self.constraint_non_consecutive(self.symbols[pos], self.symbols[neighbour])
+    def add_knight_move_constraint(self):
+        """ Two cells that are a knight move away have to be different.  """
+        for pos, neighbours in self.sudoku.constraint_cells_all(name='knight_move').items():
+            pass
+
+    def add_kings_move_constraint(self):
+        """ All the adjacent cells (including diagonal) have to be different.  """
+        for pos, neighbours in self.sudoku.constraint_cells_all(name='kings_move').items():
+            pass
+
+    def add_non_consecutive_constraint(self):
+        """ Two orthogonal adjacent cells, have to differ by at least 2.  (6, 7 can't be neighbours)"""
+        for pos, neighbours in self.sudoku.constraint_cells_all(name='consecutive').items():
+            pass
 
     def create_fact(self, pos, value):
         'Format a fact (a value assigned to a given point)'
         return intern(f'{pos} {value}')
 
-    def str_to_facts(self, positions, iterable):
+    def str_to_facts(self, positions, string):
         'Convert str in row major form to a list of facts'
-        return [self.create_fact(point, value) for point, value in zip(positions, iterable) if value != ' ']
+        return [self.create_fact(point, value) for point, value in zip(positions, string) if value != ' ']
 
-    def facts_to_str(self, positions, iterable):
+    def facts_to_str(self, positions, facts):
         'Convert a list of facts to a string in row major order with blanks for unknowns'
-        point_to_value = {key: val for key, val in (fact.split(' ') for fact in iterable)}
+        point_to_value = {key: val for key, val in (fact.split(' ') for fact in facts)}
         return ''.join(point_to_value.get(point, ' ') for point in positions)
 
-    def constraint_one_of(self, values: list, iterable: list):
-        """ All elements are one of the following values.  """
-        for position in iterable:
-            self.clauses.append(Q([self.create_fact(position, value) for value in values]) == 1)
+    def constraint_all_of(self, elements) -> 'cnf':
+        'Forces inclusion of matching rows on a truth table'
+        return Q(elements) == len(elements)
 
-    def constraint_distinct(self, iterable: list):
-        """ All elements are different.  """
-        self.clauses.append(Q(iterable) == 0)  # None of the element pairs are the same.
+    def constraint_some_of(self, elements) -> 'cnf':
+        'At least one of the elements must be true'
+        return Q(elements) >= 1
 
-    def constraint_equal(self, value, iterable: list):
-        """ All facts have to be the same value.  """
-        self.clauses.extend([Q(self.create_fact(pos, value)) == 1 for pos in iterable])
+    def constraint_one_of(self, elements) -> 'cnf':
+        'Exactly one of the elements is true'
+        return Q(elements) == 1
 
-    def constraint_not_equal(self, iterable):
-        """ The elements have to be different.  """
-        self.clauses.append(Q(iterable) == 0)
+    def constraint_basic_fact(self, element) -> 'cnf':
+        'Assert that this one element always matches'
+        return Q([element]) == 1
 
-    def constraint_non_consecutive(self, pos1, pos2):
-        """ The two elements can't be 1 step away.  """
-        pass
+    def constraint_none_of(self, elements) -> 'cnf':
+        'Forces exclusion of matching rows on a truth table'
+        return Q(elements) == 0
 
     def make_translate(self, cnf):
         lit2num = dict()
@@ -136,7 +132,7 @@ class SudokuSolverPycosat:
 
     def run(self):
         """ Run the actual solver, if successful it will return a new solved Sudoku instance.  """
-        solution = self.solve_one(sum(self.clauses, []))
+        solution = self.solve_one(self.cnf)
 
         # From docs: https://pypi.org/project/pycosat/
         if isinstance(solution, str):
@@ -150,7 +146,7 @@ class SudokuSolverPycosat:
         return self.solved
 
     def run_all(self):
-        for solution in self.itersolve(sum(self.clauses, [])):
+        for solution in self.itersolve(self.cnf):
             solved = self.facts_to_str(self.sudoku.positions, solution)
             self.solved = Sudoku(solved)
             self.show()
@@ -166,7 +162,8 @@ class SudokuSolverPycosat:
         maketrans = str.maketrans({k: '.' for k in ' .xX'})
         flatline_init = self.sudoku.flatline.translate(maketrans)
         flatline_solved = self.solved.flatline.translate(maketrans) if self.solved is not None else flatline_init
-        print(f"\n\nBegin state and solved state of the Sudoku (valid={self.solved.validate_solution()})\n")
+        valid_solution = self.solved.validate_solution() if self.solved is not None else 'FAILED'
+        print(f"\n\nBegin state and solved state of the Sudoku (valid={valid_solution})\n")
 
         fmt = ' | '.join([' %s ' * n] * n)
         sep = ' + '.join([' - ' * n] * n)

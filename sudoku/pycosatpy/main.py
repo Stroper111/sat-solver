@@ -18,31 +18,27 @@ def solve_normal(flatline=None, sudoku=None):
     flatline, sudoku = input_check(flatline, sudoku)
     solver = SudokuSolverPycosat(flatline, sudoku)
     solver.run_all()
-    solver.show()
 
 
 def solve_knight_move_constraint(flatline=None, sudoku=None):
     flatline, sudoku = input_check(flatline, sudoku, KNIGHT_CONSTRAINT)
     solver = SudokuSolverPycosat(flatline, sudoku)
     solver.add_knight_move_constraint()
-    solver.run()
-    solver.show()
+    solver.run_all()
 
 
 def solve_kings_move_constraint(flatline=None, sudoku=None):
     flatline, sudoku = input_check(flatline, sudoku, KINGS_MOVE_CONSTRAINT)
     solver = SudokuSolverPycosat(flatline, sudoku)
     solver.add_kings_move_constraint()
-    solver.run()
-    solver.show()
+    solver.run_all()
 
 
 def solve_non_consecutive_constraint(flatline=None, sudoku=None):
     flatline, sudoku = input_check(flatline, sudoku, NON_CONSECUTIVE_CONSTRAINT)
     solver = SudokuSolverPycosat(flatline, sudoku)
     solver.add_non_consecutive_constraint()
-    solver.run()
-    solver.show()
+    solver.run_all()
 
 
 def solve_miracle(flatline=None, sudoku=None):
@@ -53,12 +49,11 @@ def solve_miracle(flatline=None, sudoku=None):
     solver.add_kings_move_constraint()
     solver.add_non_consecutive_constraint()
 
-    solver.run()
-    solver.show()
+    solver.run_all()
 
 
 if __name__ == '__main__':
-    solve_normal(flatline=SIMPLE_SUDOKU[0])
+    solve_normal()
     # solve_knight_move_constraint()
     # solve_kings_move_constraint()
     # solve_non_consecutive_constraint()
