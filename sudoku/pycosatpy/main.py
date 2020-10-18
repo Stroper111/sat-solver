@@ -54,6 +54,8 @@ def solve_miracle(flatline=None, sudoku=None):
 
 if __name__ == '__main__':
     solve_normal()
+
+    # TODO implement
     # solve_knight_move_constraint()
     # solve_kings_move_constraint()
     # solve_non_consecutive_constraint()
