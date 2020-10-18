@@ -26,9 +26,9 @@ class Sudoku:
 
         # Default distinct cell conditions for the basic Sudoku problem. Same columns, same row and same sub square.
         self.distinct = []
-        self.distinct += [map(''.join, product(row, self.columns)) for row in self.rows]
-        self.distinct += [map(''.join, product(self.rows, col)) for col in self.columns]
-        self.distinct += [map(''.join, product(r, c)) for r in ["ABC", "DEF", "GHI"] for c in ["123", "456", "789"]]
+        self.distinct += [[*map(''.join, product(row, self.columns))] for row in self.rows]
+        self.distinct += [[*map(''.join, product(self.rows, col))] for col in self.columns]
+        self.distinct += [[*map(''.join, product(r, c))] for r in ["ABC", "DEF", "GHI"] for c in ["123", "456", "789"]]
 
     @property
     def flatline(self):
