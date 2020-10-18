@@ -7,10 +7,17 @@ class SudokuSolverZ3:
     """
         Solves Sudoku and variants of Sudoku using the Z3Py from Microsoft.
 
+        They also display a solver in Z3Py Guide (near bottom), but this one
+        can handle more constraints.
+
+        - https://ericpony.github.io/z3py-tutorial/guide-examples.htm
+
         :param flatline: str
             A single line of 81 characters presenting the grid in row major order.
         :param sudoku: 'Sudoku'
             An already instantiated Sudoku representation.
+
+
     """
 
     def __init__(self, flatline=None, sudoku=None):
