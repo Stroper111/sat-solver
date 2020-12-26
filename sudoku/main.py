@@ -1,5 +1,10 @@
 from sudoku.z3py import main as z3py
 from sudoku.pycosatpy import main as pycosatpy
+from sudoku.backtracking import main as backtracking
+
+
+def backtracking_solve_all(flatline=None, sudoku=None):
+    backtracking.solve_normal(flatline, sudoku)
 
 
 def z3_solve_all(flatline=None, sudoku=None):
@@ -17,3 +22,4 @@ def pycosat_solve_all(flatline=None, sudoku=None):
 if __name__ == '__main__':
     z3_solve_all()
     pycosat_solve_all()
+    backtracking_solve_all()
