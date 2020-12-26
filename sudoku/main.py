@@ -5,6 +5,9 @@ from sudoku.backtracking import main as backtracking
 
 def backtracking_solve_all(flatline=None, sudoku=None):
     backtracking.solve_normal(flatline, sudoku)
+    backtracking.solve_knight_move_constraint(flatline, sudoku)
+    backtracking.solve_kings_move_constraint(flatline, sudoku)
+    backtracking.solve_non_consecutive_constraint(flatline, sudoku)
 
 
 def z3_solve_all(flatline=None, sudoku=None):

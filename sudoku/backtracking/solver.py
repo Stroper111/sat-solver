@@ -1,3 +1,4 @@
+from tqdm import tqdm
 from typing import Union, Tuple
 
 from sudoku.base_solver import BaseSolver
@@ -7,6 +8,8 @@ from sudoku.sudoku_wrapper import Sudoku
 class Backtracking(BaseSolver):
     def __init__(self, flatline=None, sudoku=None):
         super().__init__(flatline, sudoku)
+        self.constraints = []
+        self.progressbar = None
 
     def verify(self, flatline: str) -> bool:
         """ Returns True if the sudoku is a valid solution.  """
@@ -31,7 +34,7 @@ class Backtracking(BaseSolver):
                     return False
         return True
 
-    def valid(self, flatline: str, value: str, row: int, col: int) -> bool:
+    def valid(self, flatline: str, value: str, row: int, column: int) -> bool:
         """ Soft constraint, that verifies that the value only occurs ones in the row, columns or box.  """
 
         # Value only occurs once in the row.
@@ -39,25 +42,55 @@ class Backtracking(BaseSolver):
             return False
 
         # Value only occurs once in the column.
-        if not sum(1 for number in flatline[col::9] if number == value) == 1:
+        if not sum(1 for number in flatline[column::9] if number == value) == 1:
             return False
 
         # Value only occurs once in the box.
         indices = [0, 1, 2, 9, 10, 11, 18, 19, 20]
         count = 0
         for index in indices:
-            for number in flatline[index + (row // 3) * 27 + (col // 3) * 3]:
+            for number in flatline[index + (row // 3) * 27 + (column // 3) * 3]:
                 if number == value:
                     count += 1
-        return count == 1
+        if count != 1:
+            return False
+
+        # Value only occurs once in the extra set of constraint.
+        for constraint in self.constraints:
+            if not self.verify_extra_constraints(flatline, value, row, column, constraint):
+                return False
+        return True
+
+    def verify_extra_constraints(self, flatline: str, value: str, row: int, column: int, constraint: str) -> bool:
+        """ Verify extra sudoku constraints.  """
+
+        row, column = self.sudoku.rows[int(row)], str(int(column) + 1)
+        for neighbour in self.sudoku.constraint_cells(name=constraint, row=row, column=column):
+            row_, column_ = neighbour
+            row_, column_ = self.sudoku.rows.index(row_), int(column_) - 1
+            if flatline[row_ * 9 + column_] == value:
+                return False
+        return True
+
+    def add_knight_move_constraint(self):
+        self.constraints.append('knight_move')
+
+    def add_kings_move_constraint(self):
+        self.constraints.append('kings_move')
+
+    def add_non_consecutive_constraint(self):
+        self.constraints.append('consecutive')
 
     def run(self) -> Sudoku:
         """ Returns a solved sudoku.  """
-        if self.backtracking(self.sudoku.flatline):
-            return self.solved
-        print(f"[!] No solution was found using backtracking!")
-        return self.sudoku
+        with tqdm(range(1, 81 + 1), unit='digits') as self.progressbar:
+            solved = self.backtracking(self.sudoku.flatline)
 
+        if not solved:
+            print(f"\n\n[!] No solution was found using backtracking!")
+        self.solved = self.solved if solved else self.sudoku
+        return self.solved
+       
     def show(self, n=3):
         """ Renders the start and solved sudoku.  """
         print(f"\n\nBegin state and solved state of the Sudoku (valid={self.solved.validate_solution()})\n")
@@ -72,9 +105,12 @@ class Backtracking(BaseSolver):
 
         for guess in '123456789':
             idx, row, column = current
+            self.update(idx, flatline)
 
             flatline = self.replace(flatline, idx, guess)
             if self.valid(flatline, guess, row, column):
+                self.progressbar.update(1)
+
                 if self.backtracking(flatline):
                     return True
             flatline = self.replace(flatline, idx, '.')
@@ -91,3 +127,9 @@ class Backtracking(BaseSolver):
         """ Replace a value in the flatline string.  """
         flatline = f"{flatline[:idx]}{value}{flatline[idx + 1:]}"
         return flatline
+
+    def update(self, n, flatline):
+        if self.progressbar is not None:
+            self.progressbar.n = n
+            self.progressbar.refresh()
+            self.progressbar.set_postfix({'last solved': flatline})
