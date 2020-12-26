@@ -39,6 +39,8 @@ Begin state and solved state of the Sudoku (valid=True)
  .  .  .  |  .  .  .  |  .  .  . 		 9  4  8  |  3  7  2  |  6  1  5
 ```
 
+The solution has also been verified using a backtracking algorithm.
+
 For more Sudoku examples see the [examples](/sudoku/sudoku_examples.py)
 
 ## Use cases

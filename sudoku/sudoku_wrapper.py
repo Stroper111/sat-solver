@@ -38,6 +38,7 @@ class Sudoku:
     def create_grid(self, flatline):
         """
             Creates a mapping of positions and values, based on string input.
+            Will convert all valid empty markers to the same '.' (dot) variant.
 
             Converts the flatline string '784..' etc ...
             to a dict(A1=7, A2=8, A3=4, A5=., etc...)
@@ -47,6 +48,7 @@ class Sudoku:
             flatline = random.choice(SIMPLE_SUDOKU + HARD_SUDOKU)
 
         self.validate_flatline(flatline)
+        flatline = flatline.translate(str.maketrans(self.empty_markers, '.' * len(self.empty_markers)))
         positions = list(map(''.join, product("ABCDEFGHI", "123456789")))
         grid = dict(zip(positions, flatline))
         return grid

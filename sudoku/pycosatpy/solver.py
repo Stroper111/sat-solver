@@ -5,11 +5,12 @@ import pycosat
 from sys import intern
 from itertools import product
 
+from sudoku.base_solver import BaseSolver
 from sudoku.sudoku_wrapper import Sudoku
 from sudoku.pycosatpy.utils import Q
 
 
-class SudokuSolverPycosat:
+class SudokuSolverPycosat(BaseSolver):
     """
         Solves Sudoku and variants of Sudoku using Pycosat.
 
@@ -20,11 +21,7 @@ class SudokuSolverPycosat:
     """
 
     def __init__(self, flatline=None, sudoku=None):
-        assert not (flatline is not None and sudoku is not None), "Only give a flatline or initialized Sudoku instance."
-
-        self.sudoku = Sudoku(flatline)
-        if sudoku is not None:
-            self.sudoku = sudoku
+        super().__init__(flatline, sudoku)
 
         # Convert pos to SAT solver  value.
         self.symbols = list(map(''.join, product(self.sudoku.positions, map(str, range(1, 10)))))
@@ -151,11 +148,14 @@ class SudokuSolverPycosat:
         return self.solved
 
     def run_all(self):
+        solution = []
         for idx, solution in enumerate(self.itersolve(self.cnf), start=1):
             solved = self.facts_to_str(self.sudoku.positions, solution)
-            self.solved = Sudoku(solved)
+            solution.append(Sudoku(solved))
+            self.solved = solution[-1]
             print(f"\nSolution: {idx}")
             self.show()
+        return solution
 
     def show(self, n=3):
         """
@@ -170,15 +170,4 @@ class SudokuSolverPycosat:
         flatline_solved = self.solved.flatline.translate(maketrans) if self.solved is not None else flatline_init
         valid_solution = self.solved.validate_solution() if self.solved is not None else 'FAILED'
         print(f"Begin state and solved state of the Sudoku (valid={valid_solution})\n")
-
-        fmt = ' | '.join([' %s ' * n] * n)
-        sep = ' + '.join([' - ' * n] * n)
-        for i in range(n):
-            for j in range(n):
-                offset = (i * n + j) * n ** 2
-                print(fmt % tuple(flatline_init[offset:offset + n ** 2]), end='\t\t')
-                print(fmt % tuple(flatline_solved[offset:offset + n ** 2]))
-
-            if i != n - 1:
-                print(f"{sep}\t\t{sep}")
-        print(" ")
+        self.render(flatline_init, flatline_solved, n=n)
