@@ -1,8 +1,6 @@
 import random
 
 from sudoku.sudoku_examples import *
-
-from sudoku.sudoku_wrapper import Sudoku
 from sudoku.pycosatpy.solver import SudokuSolverPycosat
 
 
