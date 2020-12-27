@@ -39,8 +39,9 @@ Begin state and solved state of the Sudoku (valid=True)
  .  .  .  |  .  .  .  |  .  .  . 		 9  4  8  |  3  7  2  |  6  1  5
 ```
 
-The normal sudplu solution has also been verified using a backtracking algorithm. The backtracking for the special
-sudoku cases, takes a long times and is better avoided.
+All solutions have been double-checked using a backtracking algorithm. For the normal sudoku's this happens in a
+reasonable time (under a minute). For the `non-consecutive` and the `miracle` sudoku's it takes about 7 minutes to solve
+it using backtracking.
 
 For more Sudoku examples see the [examples](/sudoku/sudoku_examples.py)
 
