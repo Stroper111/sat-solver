@@ -8,7 +8,7 @@ def backtracking_solve_all(flatline=None, sudoku=None):
     backtracking.solve_knight_move_constraint(flatline, sudoku)
     backtracking.solve_kings_move_constraint(flatline, sudoku)
 
-    # TODO Speed up backtracking for these cases, ~10 minutes
+    # TODO Speed up backtracking for these cases, ~7 minutes
     # backtracking.solve_non_consecutive_constraint(flatline, sudoku)
     # backtracking.solve_miracle(flatline, sudoku)
 
