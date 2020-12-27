@@ -10,6 +10,7 @@ class Backtracking(BaseSolver):
         super().__init__(flatline, sudoku)
         self.constraints = []
         self.progressbar = None
+        self.count = 0
 
     def verify(self, flatline: str) -> bool:
         """ Returns True if the sudoku is a valid solution.  """
@@ -83,14 +84,14 @@ class Backtracking(BaseSolver):
 
     def run(self) -> Sudoku:
         """ Returns a solved sudoku.  """
-        with tqdm(range(1, 81 + 1), unit='digits') as self.progressbar:
+        with tqdm(range(1, 81 + 1), unit='digits', leave=True) as self.progressbar:
             solved = self.backtracking(self.sudoku.flatline)
 
         if not solved:
             print(f"\n\n[!] No solution was found using backtracking!")
         self.solved = self.solved if solved else self.sudoku
         return self.solved
-       
+
     def show(self, n=3):
         """ Renders the start and solved sudoku.  """
         print(f"\n\nBegin state and solved state of the Sudoku (valid={self.solved.validate_solution()})\n")
@@ -130,6 +131,8 @@ class Backtracking(BaseSolver):
 
     def update(self, n, flatline):
         if self.progressbar is not None:
+            self.count += 1
             self.progressbar.n = n
-            self.progressbar.refresh()
-            self.progressbar.set_postfix({'last solved': flatline})
+
+            if self.count % 1000 == 0:
+                self.progressbar.set_postfix({'last solved': flatline})
