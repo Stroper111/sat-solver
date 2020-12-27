@@ -69,8 +69,12 @@ class Backtracking(BaseSolver):
         for neighbour in self.sudoku.constraint_cells(name=constraint, row=row, column=column):
             row_, column_ = neighbour
             row_, column_ = self.sudoku.rows.index(row_), int(column_) - 1
-            if flatline[row_ * 9 + column_] == value:
-                return False
+            if constraint != 'consecutive':
+                if flatline[row_ * 9 + column_] == value:
+                    return False
+            elif flatline[row_ * 9 + column_] != '.':
+                if abs(int(flatline[row_ * 9 + column_]) - int(value)) == 1:
+                    return False
         return True
 
     def add_knight_move_constraint(self):
@@ -135,4 +139,4 @@ class Backtracking(BaseSolver):
             self.progressbar.n = n
 
             if self.count % 1000 == 0:
-                self.progressbar.set_postfix({'last solved': flatline})
+                self.progressbar.set_postfix({'last attempt': flatline})
